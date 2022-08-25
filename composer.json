@@ -1,0 +1,15 @@
+{
+    "name": "z/lattice",
+    "autoload": {
+        "psr-4": {
+            "Z\\Lattice\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Chenilove",
+            "email": "2665468087@qq.com"
+        }
+    ],
+    "require": {}
+}
