@@ -1,5 +1,5 @@
 {
-    "name": "z/lattice",
+    "name": "zmxy/lattice",
     "autoload": {
         "psr-4": {
             "Lattice\\": "src/"
