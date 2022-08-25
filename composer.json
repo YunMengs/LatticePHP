@@ -2,7 +2,7 @@
     "name": "z/lattice",
     "autoload": {
         "psr-4": {
-            "Z\\Lattice\\": "src/"
+            "Lattice\\": "src/"
         }
     },
     "authors": [
