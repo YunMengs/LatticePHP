@@ -34,22 +34,66 @@ class LatticeImg
     }
 
     /**
-     * 创建线 （只能是直线或竖线）
+     * 创建线
      * @param Lattice $lattice Lattice对象
-     * @param array $xy XY坐标与偏移指令 [0,  0, 'center']
-     * @param int $long 线长度
-     * @param string $hv 横竖线 h.横线 v.竖线
-     * @param int $thickness 像素厚度。默认为1
+     * @param array $xy XY坐标[[1, 1],  [8, 8]]
      * @param int $color 线条颜色 1.黑 0.白 默认为1
      * @return void
      */
-    public static function Line(Lattice $lattice, array $xy, int $long, $hv = 'h', int $thickness = 1, int $color = 1)
+    public static function Line(Lattice $lattice, array $xy, int $color = 1)
     {
-        if ($hv === 'h')
+        $xy1 = $xy[0];
+        $xy2 = $xy[1];
+        // 判断线类型
+        // 横线
+        if ($xy1[1] == $xy2[1])
         {
-            $line = [str_repeat($color, $long)];
-            $lattice->_insert($line, $xy[0], $xy[1], $long, $color ^ 1);
+            $long = abs($xy1[0] - $xy2[0]);
+            // 判断哪边小。就从哪里开始
+            if ($xy1[0] < $xy2[0])
+            {
+                $i = $xy1[0];
+            }else{
+                $i = $xy2[0];
+            }
+            for ($i;$i < $long;$i++)
+            {
+                $lattice->image[$xy1[1]][$i] = $color;
+            }
+
+        }elseif($xy1[0] == $xy2[0]){
+            // 竖线
+            $long = abs($xy1[1] - $xy2[1]);
+            // 判断哪边小。就从哪里开始
+            if ($xy1[1] < $xy2[1])
+            {
+                $i = $xy1[1];
+            }else{
+                $i = $xy2[1];
+            }
+            for ($i;$i < $long;$i++)
+            {
+                $lattice->image[$i][$xy1[0]] = $color;
+            }
         }
+    }
+
+    /**
+     * 插入图片（只能是黑白）
+     * @param Lattice $lattice 点阵类
+     * @param string $filePath 图片的文件路径
+     * @param array $xy xy坐标
+     * @param int $mode 模式 0.只读白色，其余为黑 1. 只读黑色，其余为白 2. 黑白都读，其余为灰（用2表示），默认模式为1
+     * @return void
+     * @throws Exception
+     */
+    public static function insertImg(Lattice $lattice, string $filePath, array $xy, $mode = 1)
+    {
+        list($img, $size) = self::imgToLattice($filePath);
+        // 坐标偏移
+        $lattice->positions($xy, $img);
+        // 插入
+        $lattice->_insert($img, $xy[0], $xy[1], $size[0]);
     }
 
     /**
@@ -200,9 +244,9 @@ class LatticeImg
      * @param string $base64_image_content 要保存的Base64
      * @param string $file_path 文件路径
      * @param string $file_name 文件名 默认时间戳
-     * @return bool|string
+     * @return bool|string 图片的完整路径或 false
      */
-    public static function  base64_image_content(string $base64_image_content,string $file_path,string $file_name = ''){
+    public static function base64_image_content(string $base64_image_content,string $file_path,string $file_name = ''){
         //匹配出图片的格式
         if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_image_content, $result)){
             $type = $result[2];
@@ -232,10 +276,10 @@ class LatticeImg
     /**
      * 图片转点阵（黑白）
      * @param string $imgPath
-     * @param int $type 0.灰变黑 1.灰变白 2.灰
+     * @param int $mode 模式 0.只读白色，其余为黑 1. 只读黑色，其余为白 2. 黑白都读，其余为灰（用2表示），默认模式为1
      * @return array
      */
-    public static function imgToLattice(string $imgPath, int $type = 1): array
+    public static function imgToLattice(string $imgPath, int $mode = 1): array
     {
         $size = getimagesize($imgPath);// 得到图片的信息
         switch ($size['mime'])
@@ -249,7 +293,6 @@ class LatticeImg
             case 'image/gif':
                 $im = imagecreatefromgif($imgPath);// 創建一張圖片
             break;
-
         }
 
         // 储存二进制数组
@@ -272,7 +315,7 @@ class LatticeImg
                 $rgb = imagecolorat($im, $j, $i);          //取得某像素的颜色索引值
                 $rgbArr = imagecolorsforindex($im, $rgb);
 
-                switch ($type)
+                switch ($mode)
                 {
                     case 0:
                         if ($white === $rgbArr){
@@ -294,7 +337,7 @@ class LatticeImg
                         }elseif($white === $rgbArr){
                             $lattice[$i] .= 0;
                         }else{
-                            $lattice[$i] .= 3;
+                            $lattice[$i] .= 2;
                         }
                 }
 

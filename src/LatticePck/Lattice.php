@@ -280,7 +280,7 @@ class Lattice
             {
                 break;
             }
-            $this->image[$y + $i] = substr_replace($this->image[$y + $i],$item, $x, $width);
+            $this->image[$y + $i] = substr_replace($this->image[$y + $i], $item, $x, $width);
             // 防止不足
             $this->image[$y + $i] = str_pad($this->image[$y + $i], $width, $fillColor);
             $i++;
