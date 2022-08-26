@@ -3,7 +3,7 @@
     "autoload": {
         "psr-4": {
             "Lattice\\": "src/",
-            "CodeItNow\\": "CodeItNow/"
+            "CodeItNow\\": "src/CodeItNow/"
         }
     },
     "authors": [
