@@ -2,13 +2,13 @@
 
 namespace Lattice\LatticePck;
 
-use app\Utility\CString;
+use Lattice\Utils\CString;
 use CodeItNow\BarcodeBundle\Utils\BarcodeGenerator;
 use CodeItNow\BarcodeBundle\Utils\QrCode;
 use Exception;
 
 /**
- * 点阵绘画类 依赖 composer require codeitnowin/barcode
+ * 点阵绘画类 依赖 composer require lessclick-system/barcode
  * Class Lattice
  */
 class LatticeImg
@@ -86,17 +86,17 @@ class LatticeImg
     }
 
     /**
-     * Barcode生成条纹码
+     * Barcode生成二维码
      * @param Lattice $lattice 点阵类
      * @param string $text 字符串
      * @param int $size 尺寸
      * @param array $xy xy坐标
-     * @param string $filePath 文件路径
-     * @param string $fileName 文件名
+     * @param string $filePath 生成二维码的文件路径
+     * @param string $fileName 生成二维码的文件名 默认时间戳
      * @return void
      * @throws Exception
      */
-    public static function QrCode(Lattice $lattice,string $text, int $size, array $xy, string $filePath, string $fileName)
+    public static function QrCode(Lattice $lattice,string $text, int $size, array $xy, string $filePath, string $fileName = '')
     {
         // 一维码
         $filePath = self::generateQrCode($text, $size, 0, $filePath, $fileName);

@@ -11,18 +11,24 @@ use think\App;
 class Lattice
 {
     /**
-     * 绘画类
+     * 绘画字体类
      * @var array
      */
     public static $fontDraw = null;
 
     /**
-     * 图片
+     * 完整的图片数组
      * @var array
      */
     public $image;
 
+    /**
+     * @var int 图片宽度
+     */
     protected $width = 0;
+    /**
+     * @var int 图片高度
+     */
     protected $height = 0;
 
     /**
@@ -35,7 +41,8 @@ class Lattice
         {
             self::$fontDraw = new LatticeFont();
             // 字体根路径
-            self::$fontDraw->defaultFontPath = App()->getRootPath() . self::$fontDraw->defaultFontPath;
+            // self::$fontDraw->defaultFontPath = App()->getRootPath() . self::$fontDraw->defaultFontPath;
+            // self::$fontDraw->defaultFontPath = "./font/";
         }
 
         return self::$fontDraw;
@@ -80,11 +87,16 @@ class Lattice
         }
         return $height;
     }
+    
+    public function setFont()
+    {
+        $fontDraw = Lattice::getFontDraw();
+        $fontDraw->setFont($size);
+    }
 
     /**
      * 写入文字
      * @param string $text 文字
-     * @param int|string $size 尺寸
      * @param array $xy xy坐标与偏移指令
      * @param int $color 字体颜色 1.黑色 0.白色
      * @param int $spacing 字间距
@@ -93,10 +105,9 @@ class Lattice
      * @param int $getType 1 获取点阵数组
      * @return array
      */
-    public function text(string $text, $size,array $xy, int $color = 1, int $spacing = 0, int $font_bold = 0,int $heightSpacing = 0, int $getType = 0)
+    public function text(string $text,array $xy, int $color = 1, int $spacing = 0, int $font_bold = 0,int $heightSpacing = 0, int $getType = 0)
     {
         $fontDraw = Lattice::getFontDraw();
-        $fontDraw->setFont($size);
         $fontDraw->spacing = $spacing;
         $fontDraw->font_bold = $font_bold;
         $textArr = $fontDraw->getDot($text);

@@ -2,7 +2,8 @@
     "name": "zmxy/lattice",
     "autoload": {
         "psr-4": {
-            "Lattice\\": "src/"
+            "Lattice\\": "src/",
+            "CodeItNow\\": "CodeItNow/"
         }
     },
     "authors": [

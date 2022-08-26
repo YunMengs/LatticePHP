@@ -1,0 +1,26 @@
+{
+    "type": "library",
+    "name": "lessclick-system/barcode",
+    "license": "MIT",
+    "description": "Fork do codeitnowin/barcode que foi descontinuado",
+    "keywords": ["barcode","lessclick-system"],
+    "homepage": "https://bitbucket.org/lessclick-systems/barcode.git",
+    "authors": [
+        {"name": "Akhtar Khan", "email": "er.akhtarkhan@gmail.com"}
+    ],
+    "minimum-stability": "stable",
+    "version" : "3.0.6",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=5.3.2",
+	"ext-gd": "*"
+    },
+    "autoload": {
+        "psr-4": { 
+            "CodeItNow\\": "CodeItNow/" 
+        }
+    }
+}
+
+
+

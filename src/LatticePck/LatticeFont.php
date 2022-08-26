@@ -8,19 +8,19 @@ namespace Lattice\LatticePck;
  */
 class LatticeFont
 {
-    public $font_v = 12; //中文大小
-    public $font_e = 6; //E文字符宽度
+    public $font_v = 16; //中文大小
+    public $font_e = 8; //E文字符宽度
     public $spacing = 1; //间距
     public $font_bold = 1; //是否加粗
     public $font_width = 16; // 单字宽度
     public $font_height = 16; // 单字高度度
     public $byteCount = 32;//一个点阵占的字节数
-    public $fontFileName = 'st12_16';//字库名字st16_16
-    public $fontLimitQuantity = 0;// 字体越界标识 最大极限的序号
+    public $fontFileName = '';//字库名字st16_16
+    public $fontLimitQuantity = 65535;// 字体越界标识 最大极限的序号
     public $spaceNumber = 32; // 空格字符编号
     public $spaceWidth = 7; // 空格统一宽
 
-    public $defaultFontPath = 'extend/Lattice/Resources/font/';
+    public $defaultFontPath = '';
 
     /**
      * 当字体的文字宽度不等时，设置是否自动获取宽度 1.自动获取 0.固定的等宽
@@ -30,6 +30,7 @@ class LatticeFont
 
     public function __construct()
     {
+        $this->fontFileName = dirname(__DIR__) . '/Resources/font/st16_16';
         $this->adaption();
     }
 
@@ -37,57 +38,12 @@ class LatticeFont
      * 设置字体大小
      * @param int|string $font
      */
-    public function setFont($font = 12)
+    public function setFont(string $fontFileName, $font_v = 16, $font_e = 8)
     {
-        switch ($font)
-        {
-            case 12:
-                $this->font_v = 12;
-                $this->font_e = 6;
-                $this->autoWidth = 0;
-                $this->fontLimitQuantity = 65535;
-                $this->font_width = $this->font_height = 16;
-                $this->fontFileName = $this->defaultFontPath . 'st12_16';
-            break;
-            case 16:
-                $this->font_v = 16;
-                $this->font_e = 8;
-                $this->autoWidth = 0;
-                $this->fontLimitQuantity = 65535;
-                $this->font_width = $this->font_height = 16;
-                $this->fontFileName = $this->defaultFontPath . 'st16_16';
-            break;
-            case 24:
-                $this->font_v = 24;
-                $this->font_e = 12;
-                $this->autoWidth = 1;
-                $this->fontLimitQuantity = 128;
-                $this->spaceNumber = 32;
-                $this->spaceWidth = 7;
-                $this->font_width = $this->font_height = 24;
-                $this->fontFileName = $this->defaultFontPath . 'ar24_24';
-            break;
-            case 40:
-                $this->font_v = 40;
-                $this->font_e = 40;
-                $this->autoWidth = 1;
-                $this->fontLimitQuantity = 128;
-                $this->spaceNumber = 32;
-                $this->spaceWidth = 7;
-                $this->font_width = $this->font_height = 40;
-                $this->fontFileName = $this->defaultFontPath . 'c40_40';
-            break;
-            case 48:
-                $this->font_v = 48;
-                $this->font_e = 48;
-                $this->autoWidth = 1;
-                $this->fontLimitQuantity = 128;
-                $this->spaceNumber = 32;
-                $this->spaceWidth = 7;
-                $this->font_width = $this->font_height = 48;
-                $this->fontFileName = $this->defaultFontPath . 'c48_48';
-            break;
-        }
+        $this->font_v = $font_v;
+        $this->font_e = $font_e;
+        $this->font_width = $this->font_height = $font_v;
+        $this->fontFileName = $this->defaultFontPath . $fontFileName;
         $this->adaption();
     }
 
