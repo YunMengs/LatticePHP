@@ -212,6 +212,15 @@ class Lattice
                 case 'top-right':
                     $xy[0] = ($this->getWidth() - strlen($textArr[0])) + $xy[0];
                 break;
+                case 'top-left':
+                    break;
+                case 'bottom-center':
+                    $xy[0] = ($this->getWidth() / 2) - (strlen($textArr[0]) / 2) + $xy[0];
+                    $xy[1] = $this->getHight() - count($textArr) + $xy[1];
+                    break;
+                case 'bottom-left':
+                    $xy[1] = $this->getHight() - count($textArr) + $xy[1];
+                    break;
                 case 'bottom-right':
                    $xy[0] = ($this->getWidth() - strlen($textArr[0])) + $xy[0];
                    $xy[1] = $this->getHight() - self::getFontDraw()->font_v + $xy[1];
@@ -220,11 +229,12 @@ class Lattice
                    $xy[0] = ($this->getWidth() - strlen($textArr[0])) + $xy[0];
                    $xy[1] = ($this->getHight() / 2) - (count($textArr) / 2) + $xy[1];
                 break;
+                case 'center':
+                    $xy[0] = ($this->getWidth() / 2) - (strlen($textArr[0]) / 2) + $xy[0];
+                    $xy[1] = ($this->getHight() / 2) - (count($textArr) / 2) + $xy[1];
+                    break;
                 case 'center-left':
                    $xy[1] = ($this->getHight() / 2) - (count($textArr) / 2) + $xy[1];
-                break;
-                case 'bottom-left':
-                   $xy[1] = $this->getHight() - count($textArr) + $xy[1];
                 break;
             }
         }

@@ -55,16 +55,16 @@ class LatticeImg
     /**
      * Barcode生成条纹码
      * @param Lattice $lattice 点阵类
-     * @param string $text 字符串
-     * @param int $thickness 高度厚度
+     * @param string $text 内容字符串
      * @param array $xy xy坐标
-     * @param int $fillColor 条纹码颜色
      * @param string $filePath 文件路径
-     * @param string $fileName 文件名
-     * @param int $thick 是否需要加粗
+     * @param string $fileName 文件名 默认时间戳+随机数
+     * @param int $thickness 高度厚度 默认18
+     * @param int $thick 厚度比例 默认1
+     * @param int $fillColor 条纹码颜色 默认1
      * @return void
      */
-    public static function BarCode(Lattice $lattice,string $text, int $thickness, array $xy, int $fillColor, string $filePath, string $fileName = '', $thick = 1)
+    public static function BarCode(Lattice $lattice,string $text,array $xy,string $filePath, string $fileName = '', int $thickness = 18, $thick = 1, int $fillColor = 1)
     {
         // 一维码
         $filePath = self::generateBarCode($text, false, 12, $filePath, $fileName,'', $thickness);
@@ -82,21 +82,21 @@ class LatticeImg
         // 坐标偏移
         $lattice->positions($xy, $barCode);
         // 插入
-        $lattice->_insert($barCode, $xy[0], $xy[1], strlen($barCode[0]));
+        $lattice->_insert($barCode, $xy[0], $xy[1], strlen($barCode[0]), $fillColor);
     }
 
     /**
      * Barcode生成二维码
      * @param Lattice $lattice 点阵类
      * @param string $text 字符串
-     * @param int $size 尺寸
      * @param array $xy xy坐标
      * @param string $filePath 生成二维码的文件路径
-     * @param string $fileName 生成二维码的文件名 默认时间戳
+     * @param string $fileName 生成二维码的文件名 默认时间戳+随机数
+     * @param int $size 尺寸 默认100
      * @return void
      * @throws Exception
      */
-    public static function QrCode(Lattice $lattice,string $text, int $size, array $xy, string $filePath, string $fileName = '')
+    public static function QrCode(Lattice $lattice,string $text, array $xy, string $filePath, string $fileName = '',int $size = 100)
     {
         // 一维码
         $filePath = self::generateQrCode($text, $size, 0, $filePath, $fileName);
