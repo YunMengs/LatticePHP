@@ -8,7 +8,7 @@ use CodeItNow\BarcodeBundle\Utils\QrCode;
 use Exception;
 
 /**
- * 点阵绘画类 依赖 composer require lessclick-system/barcode
+ * 点阵绘画类
  * Class Lattice
  */
 class LatticeImg
@@ -64,7 +64,7 @@ class LatticeImg
      * @param int $thick 是否需要加粗
      * @return void
      */
-    public static function BarCode(Lattice $lattice,string $text, int $thickness, array $xy, int $fillColor, string $filePath, string $fileName, $thick = 1)
+    public static function BarCode(Lattice $lattice,string $text, int $thickness, array $xy, int $fillColor, string $filePath, string $fileName = '', $thick = 1)
     {
         // 一维码
         $filePath = self::generateBarCode($text, false, 12, $filePath, $fileName,'', $thickness);
