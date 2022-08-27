@@ -6,17 +6,42 @@ namespace Lattice\LatticePck;
  * 点阵输出类
  * Class LatticeOutput
  */
-class LatticeOutput extends Lattice
+class LatticeOutput
 {
+    public $lattice;
+
+    public function __construct(Lattice $lattice)
+    {
+        $this->lattice = $lattice;
+    }
+
+    /**
+     * 用点阵图生成完整的HTML代码，并返回
+     * @return string
+     */
+    public function getHTML(): string
+    {
+        return $this->getHead() . $this->getBinaryOutHtml() . $this->getFoot();
+    }
+
+    /**
+     * 返回点阵图数组
+     * @return array
+     */
+    public function getArray(): array
+    {
+        return $this->lattice->image;
+    }
+
     /**
      * 二进制输出方法 HTML 把当前视图输出
      *
      * @return string
      */
-    function getBinaryOutHtml(): string
+    public function getBinaryOutHtml(): string
     {
         $str="<html><body><div class='k'>";
-        foreach ($this->image as $item)
+        foreach ($this->lattice->image as $item)
         {
             $str .= $this->getBinaryOutRow($item);
         }
@@ -30,7 +55,7 @@ class LatticeOutput extends Lattice
      * @param string $string
      * @return string
      */
-    function getBinaryOutRow(string $string): string
+    public function getBinaryOutRow(string $string): string
     {
         $strLen = mb_strlen($string);
         $html = [
@@ -47,9 +72,9 @@ class LatticeOutput extends Lattice
         return $str;
     }
 
-    public function getHtml()
+    public function getHead()
     {
-        echo "<!DOCTYPE\">
+        return "<!DOCTYPE\">
         <html xmlns=\"http://www.w3.org/1999/xhtml\">
         <head>
         <meta name=\"viewport\" content=\"width=device-width,user-scalabl
@@ -94,7 +119,7 @@ class LatticeOutput extends Lattice
 
     public function getFoot()
     {
-        echo '</body>
+        return '</body>
         </html>';
 
     }
