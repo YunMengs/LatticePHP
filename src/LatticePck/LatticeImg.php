@@ -44,10 +44,17 @@ class LatticeImg
     {
         $xy1 = $xy[0];
         $xy2 = $xy[1];
+        // 判断越界
+        $xy1[0] = $xy1[0] > $lattice->getWidth() ? $lattice->getWidth() : $xy1[0] ;
+        $xy2[0] = $xy2[0] > $lattice->getWidth() ? $lattice->getWidth() : $xy2[0] ;
+
+        $xy1[1] = $xy1[1] > $lattice->getHight() ? $lattice->getHight() : $xy1[1] ;
+        $xy2[1] = $xy2[1] > $lattice->getHight() ? $lattice->getHight() : $xy2[1] ;
+
         // 判断线类型
-        // 横线
         if ($xy1[1] == $xy2[1])
         {
+            // 横线
             $long = abs($xy1[0] - $xy2[0]);
             // 判断哪边小。就从哪里开始
             if ($xy1[0] < $xy2[0])
@@ -74,6 +81,23 @@ class LatticeImg
             for ($i;$i < $long;$i++)
             {
                 $lattice->image[$i][$xy1[0]] = $color;
+            }
+        }else{
+            // 斜线
+            $long = abs($xy1[0] - $xy2[0]);
+            // 防止越界
+            $long = $long > $lattice->getHight() ? $lattice->getHight() : $long;
+            $long = $long > $lattice->getWidth() ? $lattice->getWidth() : $long;
+            // 判断哪边小。就从哪里开始
+            if ($xy1[0] < $xy2[0])
+            {
+                $i = $xy1[0];
+            }else{
+                $i = $xy2[0];
+            }
+            for ($i;$i < $long;$i++)
+            {
+                $lattice->image[$i][$i] = $color;
             }
         }
     }
