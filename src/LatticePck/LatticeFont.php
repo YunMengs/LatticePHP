@@ -113,9 +113,12 @@ class LatticeFont
             }
 
             $oldLocation = $location;
-            $location *= $this->byteCount; /* 计算汉字字模在文件中的位置 */
-            fseek($fp, $location, SEEK_SET);//定位到汉字或字母指针开始的地方
-            $dot.= fread($fp, $this->byteCount);//读取32字节的长度，一个字节8位，一行依次放两个字节组成16*16的点阵
+            // 计算字模的文件位置
+            $location *= $this->byteCount;
+            // 定位到汉字或字母指针开始的地方
+            fseek($fp, $location, SEEK_SET);
+            // 读取（一个点阵占的字节数）的长度（即一个字），每次读取1个字节（8位），最后拼接。
+            $dot .= fread($fp, $this->byteCount);
             for ($c = 0; $c < $this->byteCount; $c++)
             {
                 $dot_string .= sprintf("%08b", ord($dot[$c]));
@@ -127,7 +130,6 @@ class LatticeFont
                 $width = $this->font_e;
             else
                 $width = $this->font_v;
-
 
             // 将每个字切割成数组合并
             for ($h = 0; $h < $this->font_v; $h++)
@@ -141,7 +143,7 @@ class LatticeFont
                 if ($oldLocation === $this->spaceNumber)
                     $width = $this->spaceWidth;
 
-                // 垃圾ThinkPHP框架
+                // 数组赋予初始值，不然有些框架会报错
                 if (!isset($dotArray[$h]))
                     $dotArray[$h] = '';
                 $dot = mb_substr($dot_string, $h * $this->font_width, $width, 'utf-8');
@@ -211,7 +213,7 @@ class LatticeFont
         // 将每个字切割成数组合并
         $dotArr = [];
         for ($h = 0; $h < $fontV; $h++) {
-            // 垃圾ThinkPHP框架
+            // 数组赋予初始值，不然有些框架会报错
             if (!isset($dotArray[$h]))
                 $dotArray[$h] = '';
             $dotArr[$h] = mb_substr($dot_string, $h * $font_width, $font_width, 'utf-8');
