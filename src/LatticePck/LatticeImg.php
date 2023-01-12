@@ -130,9 +130,10 @@ class LatticeImg
      * @param int $thickness 高度厚度 默认18
      * @param int $thick 厚度比例 默认1
      * @param int $fillColor 条纹码颜色 默认1
+     * @param bool $delete 是否自动将生成的图片删除 默认true
      * @return void
      */
-    public static function BarCode(Lattice $lattice,string $text,array $xy,string $filePath, string $fileName = '', int $thickness = 18, $thick = 1, int $fillColor = 1)
+    public static function BarCode(Lattice $lattice,string $text,array $xy,string $filePath, string $fileName = '', int $thickness = 18, $thick = 1, int $fillColor = 1, bool $delete = true)
     {
         // 一维码
         $filePath = self::generateBarCode($text, false, 12, $filePath, $fileName,'', $thickness);
@@ -151,6 +152,8 @@ class LatticeImg
         $lattice->positions($xy, $barCode);
         // 插入
         $lattice->_insert($barCode, $xy[0], $xy[1], strlen($barCode[0]), $fillColor);
+        // 自动删除图片
+        if ($delete) unlink($filePath);
     }
 
     /**
@@ -160,11 +163,12 @@ class LatticeImg
      * @param array $xy xy坐标
      * @param string $filePath 生成二维码的文件路径
      * @param string $fileName 生成二维码的文件名 默认时间戳+随机数
+     * @param bool $delete 是否自动将生成的图片删除 默认true
      * @param int $size 尺寸 默认100
      * @return void
      * @throws Exception
      */
-    public static function QrCode(Lattice $lattice,string $text, array $xy, string $filePath, string $fileName = '',int $size = 100)
+    public static function QrCode(Lattice $lattice,string $text, array $xy, string $filePath, string $fileName = '', bool $delete = true, int $size = 100)
     {
         // 一维码
         $filePath = self::generateQrCode($text, $size, 0, $filePath, $fileName);
@@ -173,6 +177,8 @@ class LatticeImg
         $lattice->positions($xy, $barCode);
         // 插入
         $lattice->_insert($barCode, $xy[0], $xy[1], $size[0]);
+        // 自动删除图片
+        if ($delete) unlink($filePath);
     }
 
 

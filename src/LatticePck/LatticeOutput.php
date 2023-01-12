@@ -124,5 +124,63 @@ class LatticeOutput
 
     }
 
+    /**
+     * 将二进制数据转换16进制数串的函数（并反转）
+     * @param array $olbImage 点阵数组
+     * @return string $_32hexa
+     */
+    public function toHexa(array $olbImage): string
+    {
+        // 颜色反转
+        $arr = [1, 0];
+        foreach ($olbImage as &$item) {
+            $strLen = mb_strlen($item, $this->encoding);
+            for ($i = 0; $i < $strLen; $i++) {
+                $item[$i] = $arr[$item[$i]];
+            }
+        }
+        // 倒置并竖着
+        $image = [];
+        // 一行长度
+        $strLen = mb_strlen($olbImage[0]);
+        foreach ($olbImage as $key => &$item) {
+            // 倒置
+            $item = strrev($item);
+            // 并竖着
+            for ($i = 0; $i < $strLen; $i++) {
+                try {
+                    $image[$i] .= $item[$i];
+                } catch (\Exception $e) {
+                    $image[$i] = $item[$i];
+                }
+            }
+        }
+
+        $binary = implode('', $image);
+        $_32hexa = "";
+        $index = -4; // 从后面4个开始取
+        $long = mb_strlen($binary);
+        // $i = 1;
+        while (abs($index) <= $long) {
+            $a = substr($binary, $index, 4);
+            $index = $index - 4;
+            $_32hexa = base_convert($a, 2, 16) . $_32hexa;
+            // 每2个加 "0x" 和 逗号
+            // if ($i % 2 === 0)
+            // {
+            //     $_32hexa = ',0x' . $_32hexa;
+            // }
+            // $i++;
+        }
+
+        /** @var $str */
+        $str = ltrim($_32hexa, ',');
+
+        // 填充
+        // $n = ($this->image_width * $this->image_height) / 4;
+        // $str = str_pad($str, $n, 'f');
+
+        return $str;
+    }
 
 }
