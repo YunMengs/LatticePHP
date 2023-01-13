@@ -36,7 +36,10 @@ class LatticeFont
 
     /**
      * 设置字体大小
-     * @param int|string $font
+     * @param stirng $fontFileName 字体文件路径
+     * @param int $font_v 中文宽度
+     * @param int $font_e 英文宽度
+     * @return void
      */
     public function setFont(string $fontFileName, $font_v = 16, $font_e = 8)
     {
@@ -171,13 +174,13 @@ class LatticeFont
 
     /**
      * 字符串换行分割
-     * @param string $str 原始字符串
-     * @param int $length 插入的间隔长度, 英文长度
-     * @param int $hans_length 一个汉字等于多少个英文的宽度
-     * @param string $append 需要插入的字符串
-     * @return array
+     * @param string $str 要被换行分割的字符串
+     * @param int $length 一行的长度, 英文长度 默认12
+     * @param int $hans_length 一个汉字等于多少个英文的宽度（GBK编码是2，UTF-8编码是3） 默认2
+     * @param string $append 尾部追加的字符串 默认为空
+     * @return array 字符串分割后的数组
      */
-    public static function strWrap(string $str,int $length = 12,int $hans_length = 2,string $append = "<br>"): array
+    public static function strWrap(string $str,int $length = 12,int $hans_length = 2,string $append = ''): array
     {
         // $line 记录当前行的长度 // $len utf-8字符串的长度
         $nstr = "";
@@ -186,7 +189,7 @@ class LatticeFont
             $v = mb_substr($str, $i, 1, "utf-8"); // 获取当前的汉字或字母
             $vlen = strlen($v) > 1 ? $hans_length : 1; // 根据二进制长度 判断出当前是中文还是英文
             if (($line + $vlen) > $length) { // 检测如果加上当前字符是否会超出行的最大字数
-                // $nstr .= $append; // 超出就加上换行符
+                $nstr .= $append; // 尾部追加
                 $arr[] = $nstr;
                 $nstr = '';
                 $line = 0; // 因为加了换行符 就是新的一行 所以当前行长度设置为0

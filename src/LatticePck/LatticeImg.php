@@ -5,6 +5,7 @@ namespace Lattice\LatticePck;
 use Lattice\Utils\CString;
 use CodeItNow\BarcodeBundle\Utils\BarcodeGenerator;
 use CodeItNow\BarcodeBundle\Utils\QrCode;
+use CodeItNow\BarcodeBundle\Utils\BarcodeType;
 use Exception;
 
 /**
@@ -20,7 +21,7 @@ class LatticeImg
      * @param Lattice $lattice Lattice对象
      * @param int $width 宽度
      * @param int $height 高度
-     * @param array $xy XY坐标 [0,  0]
+     * @param array $xy XY坐标偏移
      * @param int $fillColor 填充颜色 0.白 1.黑
      * @param int $borderSize 边框大小
      * @param int $borderColor 边框颜色
@@ -29,14 +30,54 @@ class LatticeImg
     public static function Rectangle(Lattice $lattice, int $width, int $height, array $xy, int $fillColor = 0, int $borderSize = 0, int $borderColor = 1): void
     {
         $image = array_fill($fillColor, $height, str_repeat($fillColor, $width));
+        // 绘制边框
+        if ($borderSize > 0)
+        {
+            // 上面和下面
+            $length = count($image) - 1;
+            for ($i = 0;$i <= $borderSize; $i++)
+            {
+                $image[$i] = str_repeat($borderColor, $width);
+                $image[$length- $i] = str_repeat($borderColor, $width);
+            }
+            // 左边和右边
+            for ($i = 0;$i < $length; $i++)
+            {
+                for ($j = 0;$j <= $borderSize; $j++)
+                {
+                    $image[$i][$j] = $borderColor;
+                    $image[$i][($width - 1) - $j] = $borderColor;
+                }
+            }
+
+        }
         $lattice->positions($xy, $image);
         $lattice->_insert($image, $xy[0], $xy[1], $width);
     }
 
     /**
+     * 创建点
+     * @param Lattice $lattice Lattice对象
+     * @param array $xy XY坐标偏移指令
+     * @param int $color 点颜色 1.黑 0.白 默认为1
+     * @return void
+     */
+    public static function point(Lattice $lattice, array $xy, int $color = 1)
+    {
+        // 点
+        $image = [$color];
+        // 判断越界
+        $xy[0] = $xy[0] > $lattice->getWidth() ? $lattice->getWidth() : $xy[0] ;
+        $xy[1] = $xy[1] > $lattice->getHight() ? $lattice->getHight() : $xy[1] ;
+        // 坐标偏移
+        $lattice->positions($xy, $image);
+        $lattice->_insert($image, $xy[0], $xy[1], 1);
+    }
+
+    /**
      * 创建线
      * @param Lattice $lattice Lattice对象
-     * @param array $xy XY坐标[[1, 1],  [8, 8]]
+     * @param array $xy XY坐标[[1, 1],  [8, 8]] 不支持偏移指令
      * @param int $color 线条颜色 1.黑 0.白 默认为1
      * @return void
      */
@@ -107,13 +148,17 @@ class LatticeImg
      * @param Lattice $lattice 点阵类
      * @param string $filePath 图片的文件路径
      * @param array $xy xy坐标
+     * @param int $color 颜色 默认 1（填0等于黑白反转）
      * @param int $mode 模式 0.只读白色，其余为黑 1. 只读黑色，其余为白 2. 黑白都读，其余为灰（用2表示），默认模式为1
      * @return void
      * @throws Exception
      */
-    public static function insertImg(Lattice $lattice, string $filePath, array $xy, $mode = 1)
+    public static function insertImg(Lattice $lattice, string $filePath, array $xy, int $color = 1, $mode = 1)
     {
         list($img, $size) = self::imgToLattice($filePath);
+        // 颜色反转
+        if ($color === 0)
+            $lattice->colorReflection($lattice);
         // 坐标偏移
         $lattice->positions($xy, $img);
         // 插入
@@ -125,20 +170,20 @@ class LatticeImg
      * @param Lattice $lattice 点阵类
      * @param string $text 内容字符串
      * @param array $xy xy坐标
-     * @param string $filePath 文件路径
-     * @param string $fileName 文件名 默认时间戳+随机数
+     * @param string $barcodeType 条码格式 默认 BarcodeType::Code128
      * @param int $thickness 高度厚度 默认18
      * @param int $thick 厚度比例 默认1
      * @param int $fillColor 条纹码颜色 默认1
      * @param bool $delete 是否自动将生成的图片删除 默认true
+     * @param string $filePath 文件路径 默认 public/images/ (结尾记得带/)
+     * @param string $fileName 文件名 默认时间戳+随机数
      * @return void
      */
-    public static function BarCode(Lattice $lattice,string $text,array $xy,string $filePath, string $fileName = '', int $thickness = 18, $thick = 1, int $fillColor = 1, bool $delete = true)
+    public static function BarCode(Lattice $lattice,string $text,array $xy, string $barcodeType = BarcodeType::Code128, int $thickness = 18, $thick = 1, int $fillColor = 1, bool $delete = false, string $filePath = 'public/images/', string $fileName = '')
     {
         // 一维码
         $filePath = self::generateBarCode($text, false, 12, $filePath, $fileName,'', $thickness);
         list($barCode) = self::imgToLattice($filePath);
-        // dd($barCode);
         // 是否需要加粗
         if ($thick !== 1)
         {
@@ -161,14 +206,14 @@ class LatticeImg
      * @param Lattice $lattice 点阵类
      * @param string $text 字符串
      * @param array $xy xy坐标
-     * @param string $filePath 生成二维码的文件路径
-     * @param string $fileName 生成二维码的文件名 默认时间戳+随机数
-     * @param bool $delete 是否自动将生成的图片删除 默认true
      * @param int $size 尺寸 默认100
+     * @param bool $delete 是否自动将生成的图片删除 默认true
+     * @param string $filePath 生成二维码的文件路径 默认 public/images/ (结尾记得带/)
+     * @param string $fileName 生成二维码的文件名 默认时间戳+随机数
      * @return void
      * @throws Exception
      */
-    public static function QrCode(Lattice $lattice,string $text, array $xy, string $filePath, string $fileName = '', bool $delete = true, int $size = 100)
+    public static function QrCode(Lattice $lattice,string $text, array $xy, int $size = 100, bool $delete = true, string $filePath = 'public/images/', string $fileName = '')
     {
         // 一维码
         $filePath = self::generateQrCode($text, $size, 0, $filePath, $fileName);
@@ -230,19 +275,20 @@ class LatticeImg
     /**
      * Barcode生成条纹码
      * @param string $text 数据
-     * @param bool $isLabel 是否显示标签
-     * @param int $fontSize 字体大小
+     * @param string $barcodeType 条码格式 默认 BarcodeType::Code128
+     * @param bool $isLabel 是否显示标签 默认false
+     * @param int $fontSize 字体大小 默认12
      * @param string $filePath 图片路径
      * @param string $filename 图片名称
      * @param string $fontPath 字体路径 留空则使用默认
      * @param int $thickness 厚度高度
      * @return string
      */
-    public static function generateBarCode(string $text = '空数据', bool $isLabel = false, int $fontSize = 12, string $filePath = '', string $filename = '', string $fontPath = '', int $thickness = 18): string
+    public static function generateBarCode(string $text = '空数据', string $barcodeType = BarcodeType::Code128, bool $isLabel = false, int $fontSize = 12, string $filePath = '', string $filename = '', string $fontPath = '', int $thickness = 18): string
     {
         $barcode = new BarcodeGenerator();
         $barcode->setText($text);
-        $barcode->setType(BarcodeGenerator::Code128);
+        $barcode->setType($barcodeType);
         $barcode->setScale(1);
         $barcode->setThickness($thickness);
         if($isLabel)

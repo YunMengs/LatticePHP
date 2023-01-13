@@ -28,7 +28,7 @@ class LatticeOutput
      * 返回点阵图数组
      * @return array
      */
-    public function getArray(): array
+    public function getImageArray(): array
     {
         return $this->lattice->image;
     }
@@ -126,11 +126,17 @@ class LatticeOutput
 
     /**
      * 将二进制数据转换16进制数串的函数（并反转）
-     * @param array $olbImage 点阵数组
+     * @param array $olbImage 点阵数组 默认整张画布
+     * @param bool $strrev 是否反转图片（将图片倒置并且竖直）
      * @return string $_32hexa
      */
-    public function toHexa(array $olbImage): string
+    public function toHexa(array $olbImage = [], bool $strrev = false): string
     {
+        if (!$olbImage)
+        {
+            $olbImage = $this->lattice->image;
+        }
+
         // 颜色反转
         $arr = [1, 0];
         foreach ($olbImage as &$item) {
@@ -139,21 +145,27 @@ class LatticeOutput
                 $item[$i] = $arr[$item[$i]];
             }
         }
-        // 倒置并竖着
-        $image = [];
-        // 一行长度
-        $strLen = mb_strlen($olbImage[0]);
-        foreach ($olbImage as $key => &$item) {
-            // 倒置
-            $item = strrev($item);
-            // 并竖着
-            for ($i = 0; $i < $strLen; $i++) {
-                try {
-                    $image[$i] .= $item[$i];
-                } catch (\Exception $e) {
-                    $image[$i] = $item[$i];
+
+        if($strrev)
+        {
+            // 倒置并竖着
+            $image = [];
+            // 一行长度
+            $strLen = mb_strlen($olbImage[0]);
+            foreach ($olbImage as $key => &$item) {
+                // 倒置
+                $item = strrev($item);
+                // 并竖着
+                for ($i = 0; $i < $strLen; $i++) {
+                    try {
+                        $image[$i] .= $item[$i];
+                    } catch (\Exception $e) {
+                        $image[$i] = $item[$i];
+                    }
                 }
             }
+        }else{
+            $image = $olbImage;
         }
 
         $binary = implode('', $image);

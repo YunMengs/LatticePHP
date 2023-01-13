@@ -87,7 +87,11 @@ class Lattice
         }
         return $height;
     }
-    
+
+    /**
+     * 设置字体
+     * @return void
+     */
     public function setFont()
     {
         $fontDraw = Lattice::getFontDraw();
@@ -148,48 +152,6 @@ class Lattice
         }
     }
 
-
-
-    /**
-     * 创建图形
-     * @param string $drawingObjectName 图形名称
-     * @param array $p 可变参数
-     */
-    public function createDrawingObject(string $drawingObjectName, ...$p)
-    {
-        switch ($drawingObjectName)
-        {
-            case 'Rectangle':
-                LatticeImg::Rectangle(
-                    $this,
-                    $p[0],
-                    $p[1],
-                    (array_key_exists(2,$p) ? $p[2] : array(0,0)),
-                    (array_key_exists(3,$p) ? $p[3] : 0),
-                    (array_key_exists(4,$p) ? $p[4] : 0)
-                );
-            break;
-        }
-    }
-
-    /**
-     * 插入图片方法
-     * @param string $filePath 图片路径
-     * @param array $xy xy坐标与偏移指令
-     * @param int $color 颜色反射
-     * @return void
-     */
-    function _insertImg(string $filePath, array $xy, int $color = 1)
-    {
-        list($lattice, $size) = LatticeImg::imgToLattice($filePath);
-        // 颜色反转
-        if ($color === 0)
-            $this->colorReflection($lattice);
-        $this->positions($xy, $lattice);
-        $this->_insert($lattice, $xy[0], $xy[1], $size[0]);
-
-    }
-
     /**
      * 坐标偏移居中效果
      *
@@ -243,7 +205,7 @@ class Lattice
 
     /**
      * 颜色反转
-     * @param array $textArr
+     * @param array $textArr 点阵数组
      * @return void
      */
     public function colorReflection(array &$textArr)
