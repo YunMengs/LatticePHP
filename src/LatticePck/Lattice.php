@@ -2,8 +2,6 @@
 
 namespace Lattice\LatticePck;
 
-use think\App;
-
 /**
  * 点阵绘画类 依赖 composer require codeitnowin/barcode
  * Class Lattice
