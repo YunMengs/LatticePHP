@@ -1,6 +1,6 @@
 {
     "name": "zmxy/lattice",
-    "description": "PHP生成点阵图组件.教程：https://github.com/Chenilove/LatticePHP",
+    "description": "PHP生成点阵图组件.教程：https://github.com/YunMengs/LatticePHP",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -10,7 +10,7 @@
     },
     "authors": [
         {
-            "name": "Chenilove",
+            "name": "YunMengs",
             "email": "2665468087@qq.com"
         }
     ],
