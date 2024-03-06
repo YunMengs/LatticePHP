@@ -138,9 +138,9 @@ $lattice->createBlankImage($width, $height);
 
 > 需要注意的是，如果源字体不可商用，您也无法将这个点阵字体商用，请尊重版权。本文会用免费的宋体来演示。
 
-[点阵工具下载](https://jmj.cc/s/71996tvm)
+[点阵工具下载](https://a9589d8522.znas.cn/AppH5/share/?nid=LIYDIMJQGEYDGR2EGFMTE&code=PI2zjtUfa9VD7PZ66AMNaQKnm3rvZ3RQ1wOKc1xLuB3LuGSnVsm1ExWjxsycp5wEJM&mode=file&display=list)
 
-这里面主要是设置字号和字体宽高度（比如说一般来讲16号字体宽高都是16）。
+这里面主要是设置字号和字体宽高度，宽高要保持8的倍数，比如12号字体宽高填16。
 
 ![image-20230112163019884](https://s2.loli.net/2023/01/12/lGR9o6UuFIftWML.png)
 
